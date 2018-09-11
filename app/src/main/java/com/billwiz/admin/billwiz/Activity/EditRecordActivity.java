@@ -1,4 +1,4 @@
-package com.nightonke.saver.activity;
+package com.billwiz.admin.billwiz.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,20 +17,21 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
+import com.billwiz.admin.billwiz.model.BillWiz;
 import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.github.johnpersano.supertoasts.SuperToast;
-import com.nightonke.saver.R;
-import com.nightonke.saver.adapter.ButtonGridViewAdapter;
-import com.nightonke.saver.adapter.EditMoneyRemarkFragmentAdapter;
-import com.nightonke.saver.adapter.TagChooseFragmentAdapter;
-import com.nightonke.saver.fragment.CoCoinFragmentManager;
-import com.nightonke.saver.fragment.TagChooseFragment;
-import com.nightonke.saver.model.CoCoinRecord;
-import com.nightonke.saver.model.RecordManager;
-import com.nightonke.saver.ui.CoCoinScrollableViewPager;
-import com.nightonke.saver.ui.CoCoinUnscrollableViewPager;
-import com.nightonke.saver.ui.MyGridView;
-import com.nightonke.saver.util.CoCoinUtil;
+import com.billwiz.admin.billwiz.R;
+import com.billwiz.admin.billwiz.adapter.ButtonGridViewAdapter;
+import com.billwiz.admin.billwiz.adapter.EditMoneyRemarkFragmentAdapter;
+import com.billwiz.admin.billwiz.adapter.TagChooseFragmentAdapter;
+import com.billwiz.admin.billwiz.fragment.BillWizFragmentManager;
+import com.billwiz.admin.billwiz.fragment.TagChooseFragment;
+import com.billwiz.admin.billwiz.model.BillWizRecord;
+import com.billwiz.admin.billwiz.model.RecordManager;
+import com.billwiz.admin.billwiz.ui.BillWizScrollableViewPager;
+import com.billwiz.admin.billwiz.ui.util.BillWizUnscrollableViewPager;
+import com.billwiz.admin.billwiz.ui.MyGridView;
+import com.billwiz.admin.billwiz.util.BillWizUtil;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
@@ -45,7 +46,7 @@ public class EditRecordActivity extends AppCompatActivity
     private ViewPager tagViewPager;
     private TagChooseFragmentAdapter tagAdapter;
 
-    private CoCoinScrollableViewPager editViewPager;
+    private BillWizScrollableViewPager editViewPager;
     private EditMoneyRemarkFragmentAdapter editAdapter;
 
     private MyGridView myGridView;
@@ -73,13 +74,14 @@ public class EditRecordActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             position = extras.getInt("POSITION");
-            CoCoinUtil.editRecordPosition = RecordManager.SELECTED_RECORDS.size() - 1 - position;
+            BillWizUtil.editRecordPosition = RecordManager.SELECTED_RECORDS.size() - 1 - position;
         } else {
-            CoCoinUtil.editRecordPosition = -1;
+            BillWizUtil.editRecordPosition = -1;
         }
 
 
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        //当前版本检测
+        int currentapiVersion = Build.VERSION.SDK_INT;
 
         if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
             // Do something for lollipop and above versions
@@ -92,19 +94,19 @@ public class EditRecordActivity extends AppCompatActivity
         }
 
 // edit viewpager///////////////////////////////////////////////////////////////////////////////////
-        editViewPager = (CoCoinScrollableViewPager)findViewById(R.id.edit_pager);
+        editViewPager = (BillWizScrollableViewPager)findViewById(R.id.edit_pager);
         editViewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         editAdapter = new EditMoneyRemarkFragmentAdapter(
-                getSupportFragmentManager(), CoCoinFragmentManager.EDIT_RECORD_ACTIVITY_FRAGMENT);
+                getSupportFragmentManager(), BillWizFragmentManager.EDIT_RECORD_ACTIVITY_FRAGMENT);
 
         editViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (position == 1) {
-                    CoCoinFragmentManager.editRecordActivityEditRemarkFragment.editRequestFocus();
+                    BillWizFragmentManager.editRecordActivityEditRemarkFragment.editRequestFocus();
                 } else {
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment.editRequestFocus();
+                   BillWizFragmentManager.editRecordActivityEditMoneyFragment.editRequestFocus();
                 }
             }
 
@@ -174,7 +176,7 @@ public class EditRecordActivity extends AppCompatActivity
         intent.putExtra("POSITION", position);
         setResult(RESULT_OK, intent);
 
-        CoCoinUtil.editRecordPosition = -1;
+        BillWizUtil.editRecordPosition = -1;
 
         super.finish();
     }
@@ -200,71 +202,71 @@ public class EditRecordActivity extends AppCompatActivity
         if (IS_CHANGED) {
             return;
         }
-        if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().equals("0")
-                && !CoCoinUtil.ClickButtonCommit(position)) {
-            if (CoCoinUtil.ClickButtonDelete(position)
-                    || CoCoinUtil.ClickButtonIsZero(position)) {
+        if (BillWizFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().equals("0")
+                && !BillWizUtil.ClickButtonCommit(position)) {
+            if (BillWizUtil.ClickButtonDelete(position)
+                    || BillWizUtil.ClickButtonIsZero(position)) {
 
             } else {
-                CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(CoCoinUtil.BUTTONS[position]);
+               BillWizFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(BillWizUtil.BUTTONS[position]);
             }
         } else {
-            if (CoCoinUtil.ClickButtonDelete(position)) {
+            if (BillWizUtil.ClickButtonDelete(position)) {
                 if (longClick) {
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText("0");
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(" ");
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(
-                            CoCoinUtil.FLOATINGLABELS[CoCoinFragmentManager.editRecordActivityEditMoneyFragment
+                    BillWizFragmentManager.editRecordActivityEditMoneyFragment.setNumberText("0");
+                    BillWizFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(" ");
+                    BillWizFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(
+                            BillWizUtil.FLOATINGLABELS[BillWizFragmentManager.editRecordActivityEditMoneyFragment
                                     .getNumberText().toString().length()]);
                 } else {
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(
-                            CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString()
-                            .substring(0, CoCoinFragmentManager.editRecordActivityEditMoneyFragment
+                    BillWizFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(
+                            BillWizFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString()
+                            .substring(0, BillWizFragmentManager.editRecordActivityEditMoneyFragment
                                     .getNumberText().toString().length() - 1));
-                    if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().length() == 0) {
-                        CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText("0");
-                        CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(" ");
+                    if (BillWizFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().length() == 0) {
+                        BillWizFragmentManager.editRecordActivityEditMoneyFragment.setNumberText("0");
+                        BillWizFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(" ");
                     }
                 }
-            } else if (CoCoinUtil.ClickButtonCommit(position)) {
+            } else if (BillWizUtil.ClickButtonCommit(position)) {
                 commit();
             } else {
                 if (FIRST_EDIT) {
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(CoCoinUtil.BUTTONS[position]);
+                    BillWizFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(BillWizUtil.BUTTONS[position]);
                     FIRST_EDIT = false;
                 } else {
-                    CoCoinFragmentManager.editRecordActivityEditMoneyFragment
-                            .setNumberText(CoCoinFragmentManager.editRecordActivityEditMoneyFragment
-                                    .getNumberText().toString() + CoCoinUtil.BUTTONS[position]);
+                    BillWizFragmentManager.editRecordActivityEditMoneyFragment
+                            .setNumberText(BillWizFragmentManager.editRecordActivityEditMoneyFragment
+                                    .getNumberText().toString() + BillWizUtil.BUTTONS[position]);
                 }
             }
         }
-        CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(CoCoinUtil.FLOATINGLABELS[
-                CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().length()]);
+        BillWizFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(BillWizUtil.FLOATINGLABELS[
+                BillWizFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().length()]);
     }
 
     private void commit() {
-        if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getTagId() == -1) {
+        if (BillWizFragmentManager.editRecordActivityEditMoneyFragment.getTagId() == -1) {
             showToast(NO_TAG_TOAST);
-        } else if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().equals("0")) {
+        } else if (BillWizFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().equals("0")) {
             showToast(NO_MONEY_TOAST);
         } else  {
-            CoCoinRecord coCoinRecord = new CoCoinRecord();
-            coCoinRecord.set(RecordManager.SELECTED_RECORDS.get(RecordManager.getInstance(mContext).SELECTED_RECORDS.size() - 1 - position));
-            coCoinRecord.setMoney(Float.valueOf(CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString()));
-            coCoinRecord.setTag(CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getTagId());
-            coCoinRecord.setRemark(CoCoinFragmentManager.editRecordActivityEditRemarkFragment.getRemark());
-            long updateId = RecordManager.updateRecord(coCoinRecord);
+            BillWizRecord billWizRecord = new BillWizRecord();
+            billWizRecord.set(RecordManager.SELECTED_RECORDS.get(RecordManager.getInstance(mContext).SELECTED_RECORDS.size() - 1 - position));
+            billWizRecord.setMoney(Float.valueOf(BillWizFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString()));
+            billWizRecord.setTag(BillWizFragmentManager.editRecordActivityEditMoneyFragment.getTagId());
+            billWizRecord.setRemark(BillWizFragmentManager.editRecordActivityEditRemarkFragment.getRemark());
+            long updateId = RecordManager.updateRecord(billWizRecord);
             if (updateId == -1) {
                 if (!superToast.isShowing()) {
                     showToast(SAVE_FAILED_TOAST);
                 }
             } else {
                 IS_CHANGED = true;
-                RecordManager.SELECTED_RECORDS.set(RecordManager.getInstance(mContext).SELECTED_RECORDS.size() - 1 - position, coCoinRecord);
+                RecordManager.SELECTED_RECORDS.set(RecordManager.getInstance(mContext).SELECTED_RECORDS.size() - 1 - position, billWizRecord);
                 for (int i = RecordManager.getInstance(mContext).RECORDS.size() - 1; i >= 0; i--) {
-                    if (coCoinRecord.getId() == RecordManager.RECORDS.get(i).getId()) {
-                        RecordManager.RECORDS.set(i, coCoinRecord);
+                    if (billWizRecord.getId() == RecordManager.RECORDS.get(i).getId()) {
+                        RecordManager.RECORDS.set(i, billWizRecord);
                         break;
                     }
                 }
@@ -277,7 +279,7 @@ public class EditRecordActivity extends AppCompatActivity
         SuperToast.cancelAllSuperToasts();
         SuperActivityToast.cancelAllSuperActivityToasts();
 
-        superToast.setAnimations(CoCoinUtil.TOAST_ANIMATION);
+        superToast.setAnimations(BillWizUtil.TOAST_ANIMATION);
         superToast.setDuration(SuperToast.Duration.SHORT);
         superToast.setTextColor(Color.parseColor("#ffffff"));
         superToast.setTextSize(SuperToast.TextSize.SMALL);
@@ -287,7 +289,7 @@ public class EditRecordActivity extends AppCompatActivity
 
                 superToast.setText(mContext.getResources().getString(R.string.toast_no_money));
                 superToast.setBackground(SuperToast.Background.BLUE);
-                superToast.getTextView().setTypeface(CoCoinUtil.typefaceLatoLight);
+                superToast.getTextView().setTypeface(BillWizUtil.typefaceLatoLight);
 
                 break;
             case SAVE_SUCCESSFULLY_TOAST:
@@ -295,14 +297,14 @@ public class EditRecordActivity extends AppCompatActivity
                 superToast.setText(
                         mContext.getResources().getString(R.string.toast_save_successfully));
                 superToast.setBackground(SuperToast.Background.GREEN);
-                superToast.getTextView().setTypeface(CoCoinUtil.typefaceLatoLight);
+                superToast.getTextView().setTypeface(BillWizUtil.typefaceLatoLight);
 
                 break;
             case SAVE_FAILED_TOAST:
 
                 superToast.setText(mContext.getResources().getString(R.string.toast_save_failed));
                 superToast.setBackground(SuperToast.Background.RED);
-                superToast.getTextView().setTypeface(CoCoinUtil.typefaceLatoLight);
+                superToast.getTextView().setTypeface(BillWizUtil.typefaceLatoLight);
 
                 break;
             default:
@@ -315,7 +317,7 @@ public class EditRecordActivity extends AppCompatActivity
 
     @Override
     public void onTagItemPicked(int position) {
-        CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setTag(tagViewPager.getCurrentItem() * 8 + position + 2);
+        BillWizFragmentManager.editRecordActivityEditMoneyFragment.setTag(tagViewPager.getCurrentItem() * 8 + position + 2);
     }
 
     @Override
@@ -323,6 +325,7 @@ public class EditRecordActivity extends AppCompatActivity
 
     }
 
+    //事件分发
     private float x1, x2, y1, y2;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -338,8 +341,8 @@ public class EditRecordActivity extends AppCompatActivity
                 x2 = ev.getX();
                 y2 = ev.getY();
                 if (editViewPager.getCurrentItem() == 0
-                        && CoCoinUtil.isPointInsideView(x2, y2, editViewPager)
-                        && CoCoinUtil.GetScreenWidth(mContext) - x2 <= 60) {
+                        && BillWizUtil.isPointInsideView(x2, y2, editViewPager)
+                        && BillWizUtil.GetScreenWidth(mContext) - x2 <= 60) {
                     return true;
                 }
                 break;
@@ -351,19 +354,19 @@ public class EditRecordActivity extends AppCompatActivity
 
     @Override
     public void onDestroy() {
-        for (int i = 0; i < CoCoinFragmentManager.tagChooseFragments.size(); i++) {
-            if (CoCoinFragmentManager.tagChooseFragments.get(i) != null) {
-                CoCoinFragmentManager.tagChooseFragments.get(i).onDestroy();
-                CoCoinFragmentManager.tagChooseFragments.set(i, null);
+        for (int i = 0; i < BillWizFragmentManager.tagChooseFragments.size(); i++) {
+            if (BillWizFragmentManager.tagChooseFragments.get(i) != null) {
+                BillWizFragmentManager.tagChooseFragments.get(i).onDestroy();
+                BillWizFragmentManager.tagChooseFragments.set(i, null);
             }
         }
-        if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment != null) {
-            CoCoinFragmentManager.editRecordActivityEditMoneyFragment.onDestroy();
-            CoCoinFragmentManager.editRecordActivityEditMoneyFragment = null;
+        if (BillWizFragmentManager.editRecordActivityEditMoneyFragment != null) {
+            BillWizFragmentManager.editRecordActivityEditMoneyFragment.onDestroy();
+            BillWizFragmentManager.editRecordActivityEditMoneyFragment = null;
         }
-        if (CoCoinFragmentManager.editRecordActivityEditRemarkFragment != null) {
-            CoCoinFragmentManager.editRecordActivityEditRemarkFragment.onDestroy();
-            CoCoinFragmentManager.editRecordActivityEditRemarkFragment = null;
+        if (BillWizFragmentManager.editRecordActivityEditRemarkFragment != null) {
+            BillWizFragmentManager.editRecordActivityEditRemarkFragment.onDestroy();
+            BillWizFragmentManager.editRecordActivityEditRemarkFragment = null;
         }
         super.onDestroy();
     }

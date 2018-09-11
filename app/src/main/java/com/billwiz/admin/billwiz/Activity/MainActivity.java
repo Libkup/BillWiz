@@ -24,9 +24,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.ocr.sdk.OCR;
+import com.baidu.ocr.sdk.OnResultListener;
+import com.baidu.ocr.sdk.exception.OCRError;
+import com.baidu.ocr.sdk.model.AccessToken;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuView;
 import com.billwiz.admin.billwiz.R;
@@ -39,10 +45,10 @@ import com.billwiz.admin.billwiz.model.BillWizRecord;
 import com.billwiz.admin.billwiz.model.RecordManager;
 import com.billwiz.admin.billwiz.model.SettingManager;
 import com.billwiz.admin.billwiz.ui.BillWizScrollableViewPager;
+import com.billwiz.admin.billwiz.ui.DummyOperation;
 import com.billwiz.admin.billwiz.ui.MyGridView;
 import com.billwiz.admin.billwiz.ui.animation.GuillotineAnimation;
 import com.billwiz.admin.billwiz.ui.interfaces.GuillotineListener;
-import com.billwiz.admin.billwiz.util.BillWizToast;
 import com.billwiz.admin.billwiz.util.BillWizUtil;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -54,12 +60,9 @@ import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-//import com.nightonke.saver.model.AppUpdateManager;
-//import com.nightonke.saver.ui.DummyOperation;
+import es.dmoral.toasty.Toasty;
 
-/**
- * Created by 李本康 on 2018/9/9
- */
+
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isLoading;
 
-//    private DummyOperation dummyOperation;
+    private DummyOperation dummyOperation;
 
     private final int NO_TAG_TOAST = 0;
     private final int NO_MONEY_TOAST = 1;
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity
 
         mContext = this;
         //本来被注释
-     //   Bmob.initialize(CoCoinApplication.getAppContext(), CoCoin.APPLICATION_ID);
+        //   Bmob.initialize(CoCoinApplication.getAppContext(), CoCoin.APPLICATION_ID);
         // CrashReport.initCrashReport(CoCoinApplication.getAppContext(), "900016815", false);
         //RecordManager.getInstance(CoCoinApplication.getAppContext());
         //CoCoinUtil.init(CoCoinApplication.getAppContext());
@@ -155,6 +158,7 @@ public class MainActivity extends AppCompatActivity
 //        appUpdateManager = new AppUpdateManager(mContext);
 //        appUpdateManager.checkUpdateInfo(false);
 
+        //各类传感器初始化
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 
         Sensor magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -163,9 +167,10 @@ public class MainActivity extends AppCompatActivity
         sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_GAME);
 
-        superToast = new SuperToast(this);
-        superActivityToast = new SuperActivityToast(this, SuperToast.Type.PROGRESS_HORIZONTAL);
+//        superToast = new SuperToast(this);
+//        superActivityToast = new SuperActivityToast(this, SuperToast.Type.PROGRESS_HORIZONTAL);
 
+        //检查Android版本
         int currentapiVersion = Build.VERSION.SDK_INT;
 
         Log.d("Saver", "Version number: " + currentapiVersion);
@@ -234,12 +239,28 @@ public class MainActivity extends AppCompatActivity
 
 // tag viewpager////////////////////////////////////////////////////////////////////////////////////
         tagViewPager = (ViewPager)findViewById(R.id.viewpager);
-
         if (RecordManager.getInstance(mContext).TAGS.size() % 8 == 0)
             tagAdapter = new TagChooseFragmentAdapter(getSupportFragmentManager(), RecordManager.TAGS.size() / 8);
         else
             tagAdapter = new TagChooseFragmentAdapter(getSupportFragmentManager(), RecordManager.TAGS.size() / 8 + 1);
         tagViewPager.setAdapter(tagAdapter);
+
+
+//        相机账单识别
+//        ImageView camera  = (ImageView)findViewById(R.id.camera);
+//
+//        camera.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                initAccessTokenWithAkSk();
+//                Intent intent = new Intent(MainActivity.this, RecognizeMain.class);
+//                startActivity(intent);
+//                return false;
+//            }
+//        });
+
+
+
 
 // button grid view/////////////////////////////////////////////////////////////////////////////////
         myGridView = (MyGridView)findViewById(R.id.gridview);
@@ -301,7 +322,7 @@ public class MainActivity extends AppCompatActivity
         statusButton.setOnClickListener(statusButtonOnClickListener);
 
         animation = new GuillotineAnimation.GuillotineBuilder(guillotineMenu,
-                        guillotineMenu.findViewById(R.id.guillotine_hamburger), contentHamburger)
+                guillotineMenu.findViewById(R.id.guillotine_hamburger), contentHamburger)
                 .setStartDelay(RIPPLE_DURATION)
                 .setActionBarViewForAnimation(toolbar)
                 .setClosedOnStart(true)
@@ -350,6 +371,23 @@ public class MainActivity extends AppCompatActivity
 //        }
     }
 
+    public boolean hasGotToken = false;
+    public void initAccessTokenWithAkSk() {
+        OCR.getInstance(this).initAccessTokenWithAkSk(new OnResultListener<AccessToken>() {
+            @Override
+            public void onResult(AccessToken result) {
+                String token = result.getAccessToken();
+                hasGotToken = true;
+            }
+
+            @Override
+            public void onError(OCRError error) {
+                error.printStackTrace();
+                Toast toast = Toast.makeText(BillWizApplication.getAppContext(),"AK，SK方式获取token失败",Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }, getApplicationContext(),  "064xAVng6eF18VZqjuiStxfB", "GAHw3DGcTNTfDzLUldZfZAVqI9UptEFl");
+    }
     private AdapterView.OnItemLongClickListener gridViewLongClickListener
             = new AdapterView.OnItemLongClickListener() {
         @Override
@@ -376,8 +414,8 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                    Intent intent = new Intent(mContext, AccountBookTodayViewActivity.class);
-//                    startActivityForResult(intent, SETTING_TAG);
+                    Intent intent = new Intent(mContext, AccountBookTodayViewActivity.class);
+                    startActivityForResult(intent, SETTING_TAG);
                     isLoading = false;
                 }
             }, 1000);
@@ -456,8 +494,8 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         BillWizFragmentManager.mainActivityEditMoneyFragment.setNumberText(
                                 BillWizFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString()
-                                .substring(0, BillWizFragmentManager.mainActivityEditMoneyFragment
-                                        .getNumberText().toString().length() - 1));
+                                        .substring(0, BillWizFragmentManager.mainActivityEditMoneyFragment
+                                                .getNumberText().toString().length() - 1));
                         if (BillWizFragmentManager.mainActivityEditMoneyFragment
                                 .getNumberText().toString().length() == 0) {
                             BillWizFragmentManager.mainActivityEditMoneyFragment.setNumberText("0");
@@ -531,19 +569,19 @@ public class MainActivity extends AppCompatActivity
             showToast(NO_MONEY_TOAST);
         } else  {
             Calendar calendar = Calendar.getInstance();
-            BillWizRecord coCoinRecord = new BillWizRecord(
+            BillWizRecord billWizRecord = new BillWizRecord(
                     -1,
                     Float.valueOf(BillWizFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString()),
                     "RMB",
                     BillWizFragmentManager.mainActivityEditMoneyFragment.getTagId(),
                     calendar);
-            coCoinRecord.setRemark(BillWizFragmentManager.mainActivityEditRemarkFragment.getRemark());
-            long saveId = RecordManager.saveRecord(coCoinRecord);
+            billWizRecord.setRemark(BillWizFragmentManager.mainActivityEditRemarkFragment.getRemark());
+            long saveId = RecordManager.saveRecord(billWizRecord);
             if (saveId == -1) {
 
             } else {
                 if (!superToast.isShowing()) {
-//                    changeColor();
+                    changeColor();
                 }
                 BillWizFragmentManager.mainActivityEditMoneyFragment.setTagImage(R.color.transparent);
                 BillWizFragmentManager.mainActivityEditMoneyFragment.setTagName("");
@@ -560,29 +598,43 @@ public class MainActivity extends AppCompatActivity
     private void showToast(int toastType) {
         switch (toastType) {
             case NO_TAG_TOAST:
-                BillWizToast.getInstance().showToast(R.string.toast_no_tag, SuperToast.Background.RED);
+                Toasty.info(BillWizApplication.getAppContext(), "给我选择一个标记嘛~").show();
+//                BillWizToast.getInstance().showSpuerToast("Just...give me a tag~", SuperToast.Background.RED);
+//                Toast toast = Toast.makeText(BillWizApplication.getAppContext(),"test",Toast.LENGTH_SHORT);
+//                if(BillWizToast.getInstance() != null)
+//                {
+//                    toast.show();
+//                }
+//                Toast toast = Toast.makeText(getApplicationContext(),"test",Toast.LENGTH_SHORT);
+//                toast.show();
                 tagAnimation();
+
                 break;
             case NO_MONEY_TOAST:
-                BillWizToast.getInstance().showToast(R.string.toast_no_money, SuperToast.Background.RED);
+                Toasty.info(BillWizApplication.getAppContext(), "你花了多少钱呀~").show();
+                //BillWizToast.getInstance().showToast(R.string.toast_no_money, SuperToast.Background.RED);
                 break;
             case PASSWORD_WRONG_TOAST:
-                BillWizToast.getInstance().showToast(R.string.toast_password_wrong, SuperToast.Background.RED);
+                Toasty.info(BillWizApplication.getAppContext(), "密码错了哟~").show();
+                //BillWizToast.getInstance().showToast(R.string.toast_password_wrong, SuperToast.Background.RED);
                 break;
             case PASSWORD_CORRECT_TOAST:
-                BillWizToast.getInstance().showToast(R.string.toast_password_correct, SuperToast.Background.BLUE);
+                Toasty.info(BillWizApplication.getAppContext(), "密码对了，真棒！").show();
+//                BillWizToast.getInstance().showToast(R.string.toast_password_correct, SuperToast.Background.BLUE);
                 break;
             case SAVE_SUCCESSFULLY_TOAST:
                 break;
             case SAVE_FAILED_TOAST:
                 break;
             case PRESS_AGAIN_TO_EXIT:
-                BillWizToast.getInstance().showToast(R.string.toast_press_again_to_exit, SuperToast.Background.BLUE);
+                Toasty.info(BillWizApplication.getAppContext(), "再按一次就拜拜啦~").show();
+//                BillWizToast.getInstance().showToast(R.string.toast_press_again_to_exit, SuperToast.Background.BLUE);
                 break;
             case WELCOME_BACK:
-                BillWizToast.getInstance().showToast(BillWizApplication.getAppContext()
-                        .getResources().getString(R.string.welcome_back)
-                        + "\n" + SettingManager.getInstance().getUserName(), SuperToast.Background.BLUE);
+                Toasty.info(BillWizApplication.getAppContext(), "欢迎主任回来！").show();
+//                BillWizToast.getInstance().showToast(BillWizApplication.getAppContext()
+//                        .getResources().getString(R.string.welcome_back)
+//                        + "\n" + SettingManager.getInstance().getUserName(), SuperToast.Background.BLUE);
             default:
                 break;
         }
@@ -681,7 +733,7 @@ public class MainActivity extends AppCompatActivity
 
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
-            SuperToast.cancelAllSuperToasts();
+//            SuperToast.cancelAllSuperToasts();
             return;
         }
 

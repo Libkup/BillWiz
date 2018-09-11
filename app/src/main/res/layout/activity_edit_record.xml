@@ -66,7 +66,7 @@
                     android:orientation="vertical"
                     >
 
-                    <com.nightonke.saver.ui.CoCoinScrollableViewPager
+                    <com.billwiz.admin.billwiz.ui.BillwizScrollableViewPager
                         android:id="@+id/edit_pager"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
 
                 </LinearLayout>
 
-                <com.nightonke.saver.ui.MyGridView
+                <com.billwiz.admin.billwiz.ui.MyGridView
                     android:id="@+id/gridview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

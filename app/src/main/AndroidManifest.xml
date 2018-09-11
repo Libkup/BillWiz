@@ -47,11 +47,17 @@
         <activity
             android:name=".Activity.AccountBookTagViewActivity"
             android:launchMode="singleTop" />
-        <activity
-            android:name=".Activity.AccountBookTodayViewActivity"
+       <activity
+           android:name=".Activity.AccountBookTodayViewActivity"
             android:launchMode="singleTop" />
+
+
         <activity
             android:name=".Activity.TagSettingActivity"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".Activity.EditRecordActivity"
             android:launchMode="singleTop" />
 
     </application>

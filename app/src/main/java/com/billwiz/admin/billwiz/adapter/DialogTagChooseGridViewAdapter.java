@@ -1,4 +1,4 @@
-package com.nightonke.saver.adapter;
+package com.billwiz.admin.billwiz.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,13 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nightonke.saver.R;
-import com.nightonke.saver.model.RecordManager;
-import com.nightonke.saver.util.CoCoinUtil;
+import com.billwiz.admin.billwiz.R;
+import com.billwiz.admin.billwiz.model.RecordManager;
+import com.billwiz.admin.billwiz.util.BillWizUtil;
 
-/**
- * Created by 伟平 on 2015/11/10.
- */
 
 public class DialogTagChooseGridViewAdapter extends BaseAdapter {
 
@@ -55,9 +52,9 @@ public class DialogTagChooseGridViewAdapter extends BaseAdapter {
         }
 
         holder.tagImage.setImageResource(
-                CoCoinUtil.GetTagIcon(RecordManager.TAGS.get(position + 2).getId()));
-        holder.tagName.setText(CoCoinUtil.GetTagName(RecordManager.getInstance(mContext).TAGS.get(position + 2).getId()));
-        holder.tagName.setTypeface(CoCoinUtil.GetTypeface());
+                BillWizUtil.GetTagIcon(RecordManager.TAGS.get(position + 2).getId()));
+        holder.tagName.setText(BillWizUtil.GetTagName(RecordManager.getInstance(mContext).TAGS.get(position + 2).getId()));
+        holder.tagName.setTypeface(BillWizUtil.GetTypeface());
 
         return convertView;
     }

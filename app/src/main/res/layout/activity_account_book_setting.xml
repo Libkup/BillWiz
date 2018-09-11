@@ -218,7 +218,7 @@
                             android:orientation="vertical"
                             >
 
-                            <com.nightonke.saver.ui.RiseNumberTextView
+                            <com.billwiz.admin.billwiz.ui.RiseNumberTextView
                                 android:id="@+id/expense"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
@@ -250,7 +250,7 @@
                             android:orientation="vertical"
                             >
 
-                            <com.nightonke.saver.ui.RiseNumberTextView
+                            <com.billwiz.admin.billwiz.ui.RiseNumberTextView
                                 android:id="@+id/records"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
@@ -386,7 +386,7 @@
                             android:text="@string/month_limit"
                             />
 
-                        <com.nightonke.saver.ui.RiseNumberTextView
+                        <com.billwiz.admin.billwiz.ui.RiseNumberTextView
                             android:id="@+id/month_expense"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -479,7 +479,7 @@
                             android:text="@string/month_warning"
                             />
 
-                        <com.nightonke.saver.ui.RiseNumberTextView
+                        <com.billwiz.admin.billwiz.ui.RiseNumberTextView
                             android:id="@+id/warning_expense"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"

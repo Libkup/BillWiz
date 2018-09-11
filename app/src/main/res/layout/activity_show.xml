@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nightonke.saver.activity.ShowActivity">
+    tools:context="com.billwiz.admin.billwiz.Activity.ShowActivity">
 
     <com.dev.sacot41.scviewpager.SCViewPager
         android:id="@+id/viewpager_main_activity"
@@ -165,7 +165,7 @@
         android:background="@color/white"
         />
 
-    <com.nightonke.saver.ui.CoCoinUnscrollableViewPager
+    <com.billwiz.admin.billwiz.ui.util.BillwizUnscrollableViewPager
         android:id="@+id/viewpager"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -218,7 +218,7 @@
         android:background="@color/blue"
         />
 
-    <com.nightonke.saver.ui.MyGridView
+    <com.billwiz.admin.billwiz.ui.MyGridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,12 +1,10 @@
-package com.billwiz.lbk.billwiz.ui;
+package com.billwiz.admin.billwiz.ui;
 
 import android.os.AsyncTask;
 
 import com.github.johnpersano.supertoasts.SuperActivityToast;
 
-/**
- * Created by 伟平 on 2015/10/30.
- */
+
 public class DummyOperation extends AsyncTask<Void, Integer, Void> {
 
     SuperActivityToast mSuperActivityToast;

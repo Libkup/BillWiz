@@ -73,7 +73,7 @@
                         android:gravity="left|center_vertical"
                         />
 
-                    <com.nightonke.saver.ui.RiseNumberTextView
+                    <com.billwiz.admin.billwiz.ui.RiseNumberTextView
                         android:id="@+id/month_expense"
                         android:layout_height="0dp"
                         android:layout_width="match_parent"

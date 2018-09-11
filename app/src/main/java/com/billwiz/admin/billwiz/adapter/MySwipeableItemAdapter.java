@@ -2,7 +2,9 @@ package com.billwiz.admin.billwiz.adapter;
 
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +12,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.billwiz.admin.billwiz.model.BillWiz;
 import com.billwiz.admin.billwiz.model.BillWizRecord;
 import com.billwiz.admin.billwiz.util.BillWizUtil;
+import com.billwiz.admin.billwiz.ui.SwipeableItemOnClickListener;
 import com.daimajia.androidanimations.library.YoYo;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemConstants;
@@ -24,7 +28,9 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.billwiz.admin.billwiz.model.RecordManager;
 import com.billwiz.admin.billwiz.R;
 
+
 import java.util.HashMap;
+import java.util.List;
 
 public class MySwipeableItemAdapter
         extends RecyclerView.Adapter<MySwipeableItemAdapter.MyViewHolder>
@@ -34,11 +40,15 @@ public class MySwipeableItemAdapter
     private interface Swipeable extends SwipeableItemConstants {
     }
 
+    private OnItemDeleteListener onItemDeleteListener;
+    private OnItemClickListener onItemClickListener;
+
     private Context mContext;
     private EventListener mEventListener;
-    private View.OnClickListener mItemViewOnClickListener;
-    private View.OnClickListener mSwipeableViewContainerOnClickListener;
     private static HashMap<Integer, Boolean> pinned;
+
+    private List<BillWizRecord> records;
+
 
     public interface EventListener {
         void onItemRemoved(int position);
@@ -70,28 +80,20 @@ public class MySwipeableItemAdapter
         }
     }
 
-    public MySwipeableItemAdapter(Context inContext) {
+    public MySwipeableItemAdapter(Context inContext, List<BillWizRecord> records, final OnItemDeleteListener onItemDeleteListener, OnItemClickListener onItemClickListener) {
         mContext = inContext;
+        this.records = records;
+        this.onItemDeleteListener = onItemDeleteListener;
+        this.onItemClickListener = onItemClickListener;
         // Todo optimize
         pinned = new HashMap<>();
-        for (int i = RecordManager.RECORDS.size() - 1; i >= 0; i--) {
-            pinned.put((int)RecordManager.RECORDS.get(i).getId(), false);
+        for (int i = records.size() - 1; i >= 0; i--) {
+            pinned.put((int)records.get(i).getId(), false);
         }
-        mItemViewOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemViewClick(v);
-            }
-        };
-        mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSwipeableViewContainerClick(v);
-            }
-        };
 
         setHasStableIds(true);
     }
+
 
     private void onItemViewClick(View v) {
         if (mEventListener != null) {
@@ -124,12 +126,23 @@ public class MySwipeableItemAdapter
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         // set listeners
         // (if the item is *not pinned*, click event comes to the itemView)
-        holder.itemView.setOnClickListener(mItemViewOnClickListener);
+        holder.itemView.setOnClickListener(new SwipeableItemOnClickListener(position) {
+            @Override
+            public void onClick(View v) {
+                onItemViewClick(v);
+            }
+        });
         // (if the item is *pinned*, click event comes to the mContainer)
-        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
+        holder.mContainer.setOnClickListener(new SwipeableItemOnClickListener(position) {
+            @Override
+            public void onClick(View v) {
+                onSwipeableViewContainerClick(v);
+                onItemClickListener.onItemClick(position);
+            }
+        });
 
         // set text
         int tPosition = RecordManager.RECORDS.size() - 1 - position;
@@ -162,6 +175,10 @@ public class MySwipeableItemAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
+        holder.setSwipeItemHorizontalSlideAmount(
+                pinned.get((int) records.get(
+                        records.size() - 1 - position).getId()) ?
+                        Swipeable.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
     }
 
     @Override
@@ -202,7 +219,7 @@ public class MySwipeableItemAdapter
                         RecordManager.RECORDS.size() - 1 - position).getId())) {
                     return new UnpinResultAction(this, position);
                 } else {
-                    return new SwipeRightResultAction(this, position);
+                    return new SwipeRightResultAction(this, position, onItemDeleteListener);
                 }
             case Swipeable.RESULT_SWIPED_LEFT:
                 return new SwipeLeftResultAction(this, position);
@@ -264,22 +281,26 @@ public class MySwipeableItemAdapter
     private static class SwipeRightResultAction extends SwipeResultActionRemoveItem {
         private MySwipeableItemAdapter mAdapter;
         private final int mPosition;
+        private OnItemDeleteListener onItemDeleteListener;
 
-        SwipeRightResultAction(MySwipeableItemAdapter adapter, int position) {
+        SwipeRightResultAction(MySwipeableItemAdapter adapter, int position, OnItemDeleteListener onItemDeleteListener) {
             mAdapter = adapter;
             mPosition = position;
+            this.onItemDeleteListener = onItemDeleteListener;
         }
 
         @Override
         protected void onPerformAction() {
             super.onPerformAction();
             if (BillWizUtil.backupBillWizRecord != null) {
-                RecordManager.deleteRecord(BillWizUtil.backupBillWizRecord, false);
+                RecordManager.deleteRecord(BillWizUtil.backupBillWizRecord, true);
             }
             BillWizUtil.backupBillWizRecord = null;
             BillWizUtil.backupBillWizRecord
                     = RecordManager.RECORDS.get(RecordManager.RECORDS.size() - 1 - mPosition);
             RecordManager.RECORDS.remove(RecordManager.RECORDS.size() - 1 - mPosition);
+            RecordManager.SELECTED_SUM -= BillWizUtil.backupBillWizRecord.getMoney();
+            onItemDeleteListener.onSelectSumChanged();
             mAdapter.notifyItemRemoved(mPosition);
         }
 
@@ -332,4 +353,12 @@ public class MySwipeableItemAdapter
         pinned.put((int)RecordManager.RECORDS.get(
                 RecordManager.RECORDS.size() - 1 - position).getId(), inPinned);
     }
+    public interface OnItemDeleteListener {
+        void onSelectSumChanged();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
 }
