@@ -56,7 +56,12 @@ import java.util.List;
 /**
  * Created by 胡钰玺 on 2018/9/9
  * 月视图
+ *
  * Updated by 胡钰玺 on 2018/9/11
+ * bug：运行后跳转至输入界面，待修复
+ *
+ * Updated by 胡钰玺 on 2018/9/12
+ * 修复了跳转错误的bug
  */
 
 public class AccountBookMonthViewActivity extends AppCompatActivity {
@@ -99,7 +104,7 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
         View view = mViewPager.getRootView();
         TextView title = (TextView) view.findViewById(R.id.logo_white);
         title.setTypeface(BillWizUtil.typefaceLatoLight);
-        title.setText("BillWiz");
+        title.setText(SettingManager.getInstance().getAccountBookName());
 
         mViewPager.getPagerTitleStrip().setTypeface(BillWizUtil.GetTypeface(), Typeface.NORMAL);
 
@@ -173,6 +178,7 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
         });
 
 
+        profileImage = (CircleImageView)mDrawer.findViewById(R.id.profile_image);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

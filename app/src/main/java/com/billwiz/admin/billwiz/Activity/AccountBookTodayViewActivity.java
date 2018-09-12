@@ -879,13 +879,15 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         tags.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadTagMode();
+               loadTagMode();
+
             }
         });
         months.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadMonthMode();
+
             }
         });
         settings.setOnClickListener(new View.OnClickListener() {
