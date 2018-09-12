@@ -287,14 +287,14 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         MaterialViewPagerHelper.unregister(this);
     }
 
-//    private void loadRangeMode() {
-//
-//        Log.d("Saver", "RANGE_MODE");
-//
-//        Intent intent = new Intent(mContext, AccountBookCustomViewActivity.class);
-//        startActivity(intent);
-//
-//    }
+    private void loadRangeMode() {
+
+        Log.d("Saver", "RANGE_MODE");
+
+        Intent intent = new Intent(mContext, AccountBookCustomViewActivity.class);
+        startActivity(intent);
+
+    }
 
     private void loadTagMode() {
 
@@ -873,7 +873,7 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         custom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //loadRangeMode();
+                loadRangeMode();
             }
         });
         tags.setOnClickListener(new View.OnClickListener() {
@@ -902,36 +902,36 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
                 loadListMode();
             }
         });
-//        report.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(mContext, AccountBookReportViewActivity.class));
-//            }
-//        });
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, AccountBookReportViewActivity.class));
+            }
+        });
         sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sync();
             }
         });
-//        help.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(mContext, HelpActivity.class));
-//            }
-//        });
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, HelpActivity.class));
+            }
+        });
 //        feedback.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                startActivity(new Intent(mContext, FeedbackActivity.class));
 //            }
 //        });
-//        about.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(mContext, AboutActivity.class));
-//            }
-//        });
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, AboutActivity.class));
+            }
+        });
     }
 
     private void loadLogo() {

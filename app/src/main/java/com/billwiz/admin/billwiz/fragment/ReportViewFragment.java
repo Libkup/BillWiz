@@ -985,11 +985,6 @@ public class ReportViewFragment extends Fragment
                     }
                 }
             }
-//            if (BuildConfig.DEBUG) {
-//                for (int i = 0; i < selectListData.size(); i++) {
-//                    Log.d("BillWiz", "Select List Data: " + selectListData.get(i)[0] + " " + selectListData.get(i)[1] + " " + selectListData.get(i)[2] + " " + selectListData.get(i)[3]);
-//                }
-//            }
             return null;
         }
         @Override
@@ -1006,20 +1001,34 @@ public class ReportViewFragment extends Fragment
             selectListDataAdapter = new DialogSelectListDataAdapter(selectListData);
         }
 
-        new MaterialDialog.Builder(mContext)
-                .title(R.string.report_select_list_title)
-                .cancelable(false)
-                .negativeText(R.string.cancel)
-                .adapter(selectListDataAdapter,
-                        new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                                dialog.dismiss();
-                                makeReport(which);
-                            }
-                        })
-                .show();
-    }
+//        new MaterialDialog.Builder(mContext)
+//                .title(R.string.report_select_list_title)
+//                .cancelable(false)
+//                .negativeText(R.string.cancel)
+//                .adapter(selectListDataAdapter,
+//                        new MaterialDialog.ListCallback() {
+//                            @Override
+//                            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+//                                dialog.dismiss();
+//                                makeReport(which);
+//                            }
+//                        })
+//                .show();
+
+//        MaterialDialog  materialDialog = new MaterialDialog.Builder(mContext);
+//        mContext = 0x7f0800f4;
+//        mContext = 0x0;
+//        mContext = 0x7f08002f;
+//        Context mContext = selectListDataAdapterReportViewFragment.3 localReportViewFragment.32 = new MaterialDialog.ListCallback(this) {
+//
+//            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+//                dialog.dismiss();
+//            }
+//        };
+//        localMaterialDialog.Builder1 = localMaterialDialog.Builder1.adapter(mContext, localReportViewFragment.32);
+//        localMaterialDialog.Builder1.show();
+
+}
 
     private boolean selectYear = false;
     private void makeReport(int p) {

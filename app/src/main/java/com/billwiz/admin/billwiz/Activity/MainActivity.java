@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity
                 })
                 .build();
 
-        toolbar.setOnClickListener(new View.OnClickListener() {
+        contentHamburger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animation.open();

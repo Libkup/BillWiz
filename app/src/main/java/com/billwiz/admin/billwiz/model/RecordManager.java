@@ -127,7 +127,7 @@ public class RecordManager {
 // saveRecord///////////////////////////////////////////////////////////////////////////////////////
     public static long saveRecord(final BillWizRecord billWizRecord) {
         long insertId = -1;
-        // this is a new coCoinRecord, which is not uploaded
+        // this is a new BillWizRecord, which is not uploaded
         billWizRecord.setIsUploaded(false);
 //        User user = BmobUser.getCurrentUser(CoCoinApplication.getAppContext(), User.class);
 //        if (user != null) coCoinRecord.setUserId(user.getObjectId());

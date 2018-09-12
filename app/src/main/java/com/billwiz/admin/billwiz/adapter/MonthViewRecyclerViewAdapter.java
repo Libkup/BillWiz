@@ -418,6 +418,7 @@ public class MonthViewRecyclerViewAdapter
             this.position = position;
         }
 
+        //单击饼状图slice显示具体的项目金额和百分比
         @Override
         public void onValueSelected(int i, SliceValue sliceValue) {
             String text = "";

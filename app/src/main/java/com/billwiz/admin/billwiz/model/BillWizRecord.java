@@ -26,7 +26,7 @@ public class BillWizRecord extends BmobObject {
     private Boolean isUploaded = false;
 
     public String toString() {
-        return "CoCoinRecord(" +
+        return "BillWizRecord(" +
                 "id = " + id + ", " +
                 "money = " + money + ", " +
                 "currency = " + currency + ", " +

@@ -39,6 +39,12 @@
         </activity>
 
         <activity
+            android:name=".Activity.AccountBookCustomViewActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".Activity.AccountBookReportViewActivity"
+            android:launchMode="singleTop" />
+        <activity
             android:name=".Activity.AccountBookListViewActivity"
             android:launchMode="singleTop" />
         <activity
@@ -50,15 +56,20 @@
        <activity
            android:name=".Activity.AccountBookTodayViewActivity"
             android:launchMode="singleTop" />
-
-
         <activity
             android:name=".Activity.TagSettingActivity"
             android:launchMode="singleTop" />
-
         <activity
             android:name=".Activity.EditRecordActivity"
             android:launchMode="singleTop" />
+        <activity
+            android:name=".Activity.HelpActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".Activity.AboutActivity"
+            android:launchMode="singleTop" />
+
+
 
     </application>
 
